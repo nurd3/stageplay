@@ -11,7 +11,7 @@ end
 function stageplay.check_actor(self)
 	if not self.type or not stageplay.registered_actortypes[self.type] then return false end
 	local def = stageplay.registered_actortypes[self.type]
-	if not def.check or def.check(self.object) then
+	if not def.check or not def.checkfunc(self.object) then
 		return true
 	end
 end
@@ -36,7 +36,7 @@ function stageplay.actfunc(self, staticdata, dtime_s)
 end
 function stageplay.stepfunc(self, dtime, moveresult)
 	
-	if not stageplay.stage_exists(self.stage) or not stageplay.check_actor(self) then
+	if not stageplay.stage_exists(self.stage) or stageplay.check_actor(self) then
 		self.object:remove()
 	end
 	

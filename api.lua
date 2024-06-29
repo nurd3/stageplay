@@ -73,7 +73,7 @@ function stageplay.spawn_scene(name, pos)
 	for name,data in pairs(cast) do
 		local pos2 = data.pos and vector.add(data.pos, pos) or pos
 		data.name = name
-		actors[name] = stageplay.add_actor(pos2, stage, data).object
+		actors[name] = stageplay.add_actor(pos2, stage, data):get_luaentity()
 	end
 	
 	for k,v in pairs(acts) do
