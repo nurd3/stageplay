@@ -69,10 +69,19 @@ function stageplay.add_actor(pos, stage, staticdata)
 	return minetest.add_entity(pos, "stageplay:actor", minetest.serialize(staticdata))
 end
 
+-- ACTOR UTIL FUNCTIONS --
+function stageplay.init_actor(self, staticdata, dtime_s)
+	if not self.type or not stageplay.registered_actortypes[self.type] then return false end
+	local def = stageplay.registered_actortypes[self.type]
+	if def.initfunc then
+		return def.initfunc(self, staticdata, dtime_s)
+	end
+end
+
 function stageplay.check_actor(self)
 	if not self.type or not stageplay.registered_actortypes[self.type] then return false end
 	local def = stageplay.registered_actortypes[self.type]
-	if not def.check or not def.checkfunc(self.object) then
+	if not def.checkfunc or not def.checkfunc(self.object) then
 		return true
 	end
 end
