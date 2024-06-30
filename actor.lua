@@ -1,21 +1,3 @@
-stageplay.registered_actortypes = {}
-
-function stageplay.register_actortype(name, def)
-	local invalidchars = name:gsub("[a-zA-Z0-9_:]", "")
-	
-	if invalidchars ~= "" then error("Invalid Name!", 2) end
-	
-	stageplay.registered_actortypes[name] = def
-end
-
-function stageplay.check_actor(self)
-	if not self.type or not stageplay.registered_actortypes[self.type] then return false end
-	local def = stageplay.registered_actortypes[self.type]
-	if not def.check or not def.checkfunc(self.object) then
-		return true
-	end
-end
-
 function stageplay.actfunc(self, staticdata, dtime_s)
 	
 	if staticdata then
@@ -49,7 +31,7 @@ function stageplay.statfunc(self)
 end
 
 minetest.register_entity("stageplay:actor", {
-    on_step = stageplay.stepfunc,
+	on_step = stageplay.stepfunc,
 	on_activate = stageplay.actfunc,
-    get_staticdate = stageplay.statfunc,
+	get_staticdata = stageplay.statfunc,
 })
