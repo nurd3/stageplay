@@ -1,1 +1,65 @@
+Contents
+
+1 Scene Table
+	1.1 Cast
+	1.2 Actions
+2 Register Functions
+
+-------------
+1. Scene Table
+--------------
+
+The structure of a scene looks something like this:
+stageplay.register_scene("modname:scenename", {
+	-- metadata
+	title = "Foo",		-- display name
+	...			-- custom properties are allowed
+	-- actual scene data
+	cast = {
+		...
+	},
+	actions = {
+		...
+	}
+})
+
+1.1 Cast
+
+The Cast is a special table that provides the data for the scene's actors
+e.g.
+{
+	-- actor type registered by stageplay.register_actortype()
+	type = "stageplay:default_actor",
+ 
+  	-- relative to scene spawn point
+ 	pos = {x=0, y=0, z=0},
+   
+  	-- visuals are handled the same way as minetest handles them
+  	visual = "cube" / "sprite" / "upright_sprite" / "mesh" / "wielditem" / "item",
+   	visual_size = {x=1.0, y=1.0, z=1.0},
+    	mesh = "something.b3d",
+     	textures = {"something.png"},
+	colors = {},
+
+ 	-- if not set then defaults to false
+  	is_visible = false,
+}
+
+1.2 Actions
+
+The Actions table is used for changing the scene around
+e.g.
+{
+	-- time in miliseconds
+	["0"] = {
+ 		-- assign actions to actors
+ 		["my_actor"] = {
+   			-- format goes: {"mod_name:action_name", params...}
+   			{"stageplay:show"},
+      			{"stageplay:move_by", {x=5, y=0, z=0}, 500}
+      		}
+	},
+ 	-- deletes scene after 1 second
+ 	["1000"] = {_ = {{"end_scene"}}}
+}
 
