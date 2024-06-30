@@ -5,6 +5,10 @@ local S = stageplay.get_translator
 
 local stages = {}
 
+function stageplay.ms2s(ms)	-- utility function for converting milis to seconds
+	return ms * 0.001
+end
+
 function stageplay.add_actor(pos, stage, staticdata)
 	if not type(staticdata) == "table" then staticdata = {} end
 	
