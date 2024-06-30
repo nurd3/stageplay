@@ -1,22 +1,22 @@
-stageplay.registered_actiontypes = {}
-stageplay.registered_scenes = {}
-
 local S = stageplay.get_translator
-
-local stages = {}
 
 function stageplay.ms2s(ms)	-- utility function for converting milis to seconds
 	return ms * 0.001
 end
 
-function stageplay.add_actor(pos, stage, staticdata)
-	if not type(staticdata) == "table" then staticdata = {} end
+-- REGISTER FUNCTIONS --
+stageplay.registered_actortypes = {}
+stageplay.registered_actiontypes = {}
+stageplay.registered_scenes = {}
+
+function stageplay.register_actortype(name, def)
+	local invalidchars = name:gsub("[a-zA-Z0-9_:]", "")
 	
-	staticdata.stage = stage
-	staticdata.is_visible = staticdata.is_visible or false
+	if invalidchars ~= "" then error("Invalid Name!", 2) end
 	
-	return minetest.add_entity(pos, "stageplay:actor", minetest.serialize(staticdata))
+	stageplay.registered_actortypes[name] = def
 end
+
 
 function stageplay.register_actiontype(name, def)
 	local invalidchars = name:gsub("[a-zA-Z0-9_:]", "")
@@ -46,11 +46,25 @@ function stageplay.register_scene(name, def)
 	})
 end
 
-local function bind(fn, args)
-	return function()
-		fn(table.unpack(args))
+function stageplay.add_actor(pos, stage, staticdata)
+	if not type(staticdata) == "table" then staticdata = {} end
+	
+	staticdata.stage = stage
+	staticdata.is_visible = staticdata.is_visible or false
+	
+	return minetest.add_entity(pos, "stageplay:actor", minetest.serialize(staticdata))
+end
+
+function stageplay.check_actor(self)
+	if not self.type or not stageplay.registered_actortypes[self.type] then return false end
+	local def = stageplay.registered_actortypes[self.type]
+	if not def.check or not def.checkfunc(self.object) then
+		return true
 	end
 end
+
+-- STAGE FUNCTIONS --
+local stages = {}
 
 function stageplay.add_stage(name)
 	stages[name] = {}
@@ -65,6 +79,13 @@ function stageplay.stage_exists(name)
 	return name and stages[name] ~= nil
 end
 
+local function bind(fn, args)
+	return function()
+		fn(table.unpack(args))
+	end
+end
+
+-- SPAWN SCENE --
 function stageplay.spawn_scene(name, pos)
 	if not name or not stageplay.registered_scenes[name] then return end
 	local def = stageplay.registered_scenes[name]
