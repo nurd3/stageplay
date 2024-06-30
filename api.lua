@@ -107,24 +107,20 @@ function stageplay.spawn_scene(name, pos)
 	-- load actions
 	for k,v in pairs(acts) do
 		local timing = tonumber(k) * 0.001
-		if v == "end" then
-			minetest.after(timing, bind(stageplay.delete_stage, {stage}))
-		else
-			for actor,actions in pairs(v) do
-				for _,act in ipairs(actions) do
-					local params = table.clone(act)
-					local at = params[1]
-					local atdef = stageplay.registered_actiontypes[at]
-					if not type(at) == "string" then 
-						error("expected string for actiontype name, got type "..type(at).." instead", 2)
-					end
-					if not atdef then
-						error("unknown actiontype: \""..at.."\"", 2)
-					end
-					params[1] = actors[actor]
-					if atdef.check then atdef.check(params) end
-					minetest.after(timing, bind(atdef.func, params))
+		for actor,actions in pairs(v) do
+			for _,act in ipairs(actions) do
+				local params = table.clone(act)
+				local at = params[1]
+				local atdef = stageplay.registered_actiontypes[at]
+				if not type(at) == "string" then 
+					error("expected string for actiontype name, got type "..type(at).." instead", 2)
 				end
+				if not atdef then
+					error("unknown actiontype: \""..at.."\"", 2)
+				end
+				params[1] = actors[actor]
+				if atdef.check then atdef.check(params) end
+				minetest.after(timing, bind(atdef.func, params))
 			end
 		end
 	end
