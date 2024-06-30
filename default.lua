@@ -8,7 +8,7 @@ stageplay.register_actiontype("stageplay:move_by", {
 	func = function(self, tpos, timing)
 		if not self then return end		-- do not do operations on nil
 		
-		local s = timing * 0.001		-- convert miliseconds to seconds
+		local s = stageplay.ms2s(timing)	-- convert miliseconds to seconds
 		
 		local endpos = vector.add(self.object:get_pos(), tpos)
 		
@@ -19,6 +19,24 @@ stageplay.register_actiontype("stageplay:move_by", {
 			self.object:set_velocity(vector.zero())
 			self.object:set_pos(endpos)
 		end)
+	end
+})
+
+stageplay.register_actiontype("stageplay:show", {
+	func = function(self)
+		if not self then return end		-- do not do operations on nil
+		self.object:set_properties(
+			is_visible = true
+		)
+	end
+})
+
+stageplay.register_actiontype("stageplay:hide", {
+	func = function(self)
+		if not self then return end		-- do not do operations on nil
+		self.object:set_properties(
+			is_visible = false
+		)
 	end
 })
 
