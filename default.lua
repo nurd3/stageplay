@@ -4,6 +4,13 @@ stageplay.register_actortype("stageplay:default_actor", {
 	end
 })
 
+stageplay.register_actiontype("stageplay:end_scene", {
+	func = function(self)
+		if not self then return end
+		if not self.stage then return end
+		stageplay.delete_stage(self.stage)
+	end
+})
 stageplay.register_actiontype("stageplay:move_by", {
 	func = function(self, tpos, timing)
 		if not self then return end		-- do not do operations on nil
