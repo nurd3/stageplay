@@ -3,7 +3,8 @@ Contents
 1 Scene Table
 	1.1 Cast
 	1.2 Actions
-2 Register Functions
+2 Registered Definitions
+	2.1 Actor Types
 
 -------------
 1. Scene Table
@@ -63,3 +64,18 @@ e.g.
  	["1000"] = {_ = {{"end_scene"}}}
 }
 
+------------------------
+2. Registered Defintions
+------------------------
+
+2.1 Actor Types
+
+Actor Types are used as archetypes for actors
+e.g.
+stageplay.register_actortype("modname:actorname", {
+	-- returns true if actor should be deleted
+	checkfunc = function (self) end
+
+	-- run when actor is spawned
+	initfunc = function (self, staticdata, dtime_s) end
+})
