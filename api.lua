@@ -9,6 +9,7 @@ function stageplay.add_actor(pos, stage, staticdata)
 	if not type(staticdata) == "table" then staticdata = {} end
 	
 	staticdata.stage = stage
+	staticdata.is_visible = staticdata.is_visible or false
 	
 	return minetest.add_entity(pos, "stageplay:actor", minetest.serialize(staticdata))
 end
@@ -63,19 +64,22 @@ end
 function stageplay.spawn_scene(name, pos)
 	if not name or not stageplay.registered_scenes[name] then return end
 	local def = stageplay.registered_scenes[name]
-	local cast = def.data.cast
-	local acts = def.data.actions
+	local cast = def.cast
+	local acts = def.actions
 	local stage = vector.to_string(pos)
 	local actors = {}
-	
+
+	-- make a stage
 	stageplay.add_stage(stage)
-	
+
+	-- load cast
 	for name,data in pairs(cast) do
 		local pos2 = data.pos and vector.add(data.pos, pos) or pos
 		data.name = name
 		actors[name] = stageplay.add_actor(pos2, stage, data):get_luaentity()
 	end
-	
+
+	-- load actions
 	for k,v in pairs(acts) do
 		local timing = tonumber(k) * 0.001
 		if v == "end" then
